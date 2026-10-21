@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="النموذج التجريبي لمرآة: افحص نبضك وتوترك من سيلفي فيديو.">
+<link rel="icon" type="image/png" href="mirah-app-icon.png">
+<style>body{margin:0}img{max-width:100%}</style>
+<title>مرآة: نتيجتك من 100</title>
+</head>
+<body>
+
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
+<style>
+/* Mir'ah 2.0 MVP: scanner, score out of 100, smart assistant. Palette: Amman night, Egyptian lapis, Petra rose, desert gold, Ajloun olive, Nile sand */
+:root{
+  --night:#14203A; --lapis:#2557A7; --rose:#E06C5A; --rose-ink:#B4473A; --gold:#F2B33D; --olive:#4F8A5B;
+  --bg:#FFF7EC; --surface:#FFFFFF; --mist:#E9EEF6; --fg:#14203A; --muted:#5A6478; --line:#E6DFD3;
+  --accent:#2557A7; --on-accent:#FFFFFF; --pulse:#14203A; --me:#14203A;
+  --band-low:#F6D2CB; --band-mid:#FBE6BC; --band-high:#D3E6D6; --band-low-ink:#9A3527; --band-mid-ink:#7A5600; --band-high-ink:#2F6B3C;
+  --display:'Readex Pro','IBM Plex Sans Arabic',system-ui,sans-serif; --body:'IBM Plex Sans Arabic','Readex Pro',system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0E1626;--surface:#16223A;--mist:#1E2C47;--fg:#F3EEE6;--muted:#A9B3C6;--line:#2A3955;--accent:#7EA6F2;--on-accent:#0E1626;--pulse:#FFF7EC;--me:#2557A7;--rose-ink:#F09A8C;--band-low:#4A2A2A;--band-mid:#4A3B1C;--band-high:#1F3A28;--band-low-ink:#F6B3A8;--band-mid-ink:#F7D488;--band-high-ink:#A6D9B1;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0E1626;--surface:#16223A;--mist:#1E2C47;--fg:#F3EEE6;--muted:#A9B3C6;--line:#2A3955;--accent:#7EA6F2;--on-accent:#0E1626;--pulse:#FFF7EC;--me:#2557A7;--rose-ink:#F09A8C;--band-low:#4A2A2A;--band-mid:#4A3B1C;--band-high:#1F3A28;--band-low-ink:#F6B3A8;--band-mid-ink:#F7D488;--band-high-ink:#A6D9B1;color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.7}
+.app{max-width:1200px;margin:0 auto;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:18px 48px;display:flex;flex-direction:column;gap:18px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px}
+.brand svg{height:42px;width:42px;color:var(--pulse)}
+.brand b{font-family:var(--display);font-size:24px;font-weight:700;line-height:1}
+.brand small{display:block;font-family:var(--display);font-size:11px;letter-spacing:.14em;color:var(--accent);font-weight:600}
+.pill{font-size:12px;font-family:var(--display);font-weight:600;padding:4px 10px;border-radius:999px;background:var(--mist);color:var(--accent)}
+.lang{display:inline-flex;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px;gap:2px}
+.lang button{border:0;background:transparent;color:var(--muted);padding:6px 14px;border-radius:999px;font-size:13px}
+.lang button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+.grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:18px;align-items:start}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance}
+h2{font-size:19px;font-weight:600}
+.muted{color:var(--muted)} .small{font-size:13px}
+.stage{position:relative;border-radius:18px;overflow:hidden;background:#14203A;aspect-ratio:3/4;max-height:440px;max-width:100%;display:grid;place-items:center;cursor:crosshair}
+.stage video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.stage .roi{position:absolute;border:2px solid var(--gold);border-radius:12px;box-shadow:0 0 0 999px rgba(20,32,58,.28);pointer-events:none}
+.stage .roi span{position:absolute;top:-24px;inset-inline-end:0;font-size:11px;color:#FFF7EC;background:rgba(20,32,58,.75);padding:1px 8px;border-radius:6px;white-space:nowrap}
+.stage .empty{color:#C9D3E6;text-align:center;padding:24px;display:flex;flex-direction:column;gap:12px;align-items:center;font-size:14px}
+.stage .empty svg{width:84px;height:84px;color:#FFF7EC}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.between{justify-content:space-between}
+button,.btn{font-family:var(--display);font-weight:600;font-size:14px;border-radius:12px;border:1px solid transparent;padding:10px 16px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;color:inherit}
+.primary{background:var(--accent);color:var(--on-accent)}
+.primary:hover{filter:brightness(1.07)}
+.gold{background:var(--gold);color:#14203A}
+.ghost{background:transparent;color:var(--fg);border-color:var(--line)}
+.ghost:hover{border-color:var(--accent)}
+button:disabled{opacity:.5;cursor:not-allowed}
+button:focus-visible,.btn:focus-within,select:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+input[type=file]{position:absolute;opacity:0;width:1px;height:1px}
+.progress{height:8px;border-radius:8px;background:var(--mist);overflow:hidden}
+.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--lapis),var(--rose));transition:width .2s}
+.status{font-size:13px;color:var(--muted);min-height:22px}
+details summary{cursor:pointer;font-family:var(--display);font-weight:600;font-size:14px}
+details p{margin:8px 0 0;font-size:13.5px;color:var(--muted)}
+/* score */
+.scorebox{display:grid;grid-template-columns:200px minmax(0,1fr);gap:20px;align-items:center}
+.ring{position:relative;width:200px;height:200px;max-width:100%}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0}
+.ring .num b{font-family:var(--display);font-size:64px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.ring .num span{font-size:13px;color:var(--muted)}
+.band{display:inline-block;font-family:var(--display);font-weight:600;font-size:14px;padding:4px 12px;border-radius:999px}
+.band.low{background:var(--band-low);color:var(--band-low-ink)} .band.mid{background:var(--band-mid);color:var(--band-mid-ink)} .band.high{background:var(--band-high);color:var(--band-high-ink)}
+.band.none{background:var(--mist);color:var(--muted)}
+.parts{display:flex;flex-direction:column;gap:7px}
+.part{display:grid;grid-template-columns:minmax(0,1fr) 90px 44px;gap:8px;align-items:center;font-size:13px}
+.part .bar{height:7px;border-radius:7px;background:var(--mist);overflow:hidden}
+.part .bar i{display:block;height:100%;background:var(--accent);border-radius:7px}
+.part em{font-style:normal;font-variant-numeric:tabular-nums;color:var(--muted);text-align:end}
+.conf{font-size:12.5px;font-family:var(--display);font-weight:600}
+.sample-tag{font-size:12px;color:var(--rose-ink);font-family:var(--display);font-weight:600}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.m{border:1px solid var(--line);border-radius:16px;padding:10px 12px;display:flex;flex-direction:column;gap:0;min-width:0}
+.m .k{font-size:12px;color:var(--muted)}
+.m .v{font-family:var(--display);font-weight:700;font-size:24px;line-height:1.3;font-variant-numeric:tabular-nums}
+.m .u{font-size:11.5px;color:var(--muted)}
+.sig{width:100%;height:80px;display:block;border-radius:12px;background:var(--bg)}
+.ctx{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
+select,input[type=text]{font-family:var(--body);font-size:14px;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 10px;width:100%}
+.coach{background:var(--mist);border-radius:16px;padding:16px;min-height:90px}
+.coach h4{font-family:var(--display);font-size:15px;margin:10px 0 2px;color:var(--accent)}
+.coach h4:first-child{margin-top:0}
+.coach p{margin:0 0 6px}
+/* assistant */
+.assist{border:2px solid var(--gold)}
+.assist .head{display:flex;gap:12px;align-items:center}
+.spark{width:44px;height:44px;border-radius:14px;background:var(--gold);display:grid;place-items:center;flex:none}
+.spark svg{width:24px;height:24px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chips button{background:var(--bg);border:1px solid var(--line);font-family:var(--body);font-weight:500;font-size:13px;padding:6px 12px;border-radius:999px}
+.chips button:hover{border-color:var(--gold)}
+.chat{display:flex;flex-direction:column;gap:8px;max-height:420px;overflow-y:auto}
+.bubble{padding:10px 14px;border-radius:16px;max-width:88%;white-space:pre-wrap}
+.bubble.me{background:var(--me);color:#FFF7EC;align-self:flex-start;border-end-start-radius:4px}
+.bubble.ai{background:var(--mist);align-self:flex-end;border-end-end-radius:4px}
+.bubble small{display:block;font-size:11px;color:var(--muted);margin-top:4px}
+.plans{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.plan{border:1px solid var(--line);border-radius:16px;padding:12px 14px;background:var(--surface);min-width:0}
+.plan b{font-family:var(--display);display:block;font-size:14px}
+.plan .p{font-family:var(--display);font-size:22px;font-weight:700;color:var(--accent)}
+.plan .p small{font-size:12px;color:var(--muted);font-weight:500}
+.plan span{font-size:12.5px;color:var(--muted)}
+.plan.hl{border:2px solid var(--rose)}
+.note{font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:10px;margin:0}
+@media (max-width:960px){.grid{grid-template-columns:1fr}.plans{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.scorebox{grid-template-columns:1fr;justify-items:center}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.ctx{grid-template-columns:1fr}.part{grid-template-columns:minmax(0,1fr) 70px 40px}}
+@media (prefers-reduced-motion:reduce){.progress i{transition:none}}
+</style>
+
+<div class="app">
+  <header>
+    <a class="brand" href="index.html" style="text-decoration:none;color:inherit">
+      <svg viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="mgH" x1="0.9" y1="0" x2="0.1" y2="0.9"><stop offset="0" stop-color="#2557A7"/><stop offset="1" stop-color="#E06C5A"/></linearGradient></defs><circle cx="60" cy="60" r="46" fill="none" stroke="#2557A7" stroke-opacity=".18" stroke-width="10"/><circle cx="60" cy="60" r="46" fill="none" stroke="url(#mgH)" stroke-width="10" stroke-linecap="round" stroke-dasharray="236 289" transform="rotate(-90 60 60)"/><path d="M32 63 H46 L52 49 L60 78 L68 45 L74 63 H88" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 22 Q23 32 33 34 Q23 36 21 46 Q19 36 9 34 Q19 32 21 22Z" fill="#F2B33D"/></svg>
+      <div><b>مرآة</b><small>MIR'AH</small></div>
+      <span class="pill" data-t="pill"></span>
+    </a>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-lang="jo">أردني</button>
+      <button type="button" data-lang="eg">مصري</button>
+      <button type="button" data-lang="en">English</button>
+    </div>
+  </header>
+
+  <div class="grid">
+    <div class="card">
+      <div class="row between"><h2 data-t="scanTitle"></h2><span class="muted small" data-t="privacy"></span></div>
+      <div class="stage" id="stage">
+        <div class="empty" id="empty">
+          <svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="46" fill="none" stroke="#F2B33D" stroke-width="6" stroke-dasharray="6 8"/><path d="M32 63 H46 L52 49 L60 78 L68 45 L74 63 H88" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span data-t="emptyText"></span>
+        </div>
+        <video id="vid" muted playsinline hidden></video>
+        <div class="roi" id="roi" hidden><span data-t="roi"></span></div>
+      </div>
+      <div class="row">
+        <label class="btn primary" for="file"><span data-t="upload"></span><input type="file" id="file" accept="video/*"></label>
+        <button class="ghost" id="demoBtn" type="button" data-t="demo"></button>
+        <button class="ghost" id="stopBtn" type="button" hidden data-t="stop"></button>
+      </div>
+      <div class="progress" aria-hidden="true"><i id="bar"></i></div>
+      <div class="status" id="status" role="status"></div>
+      <div class="ctx">
+        <label class="f"><span data-t="qSleep"></span><select id="sleep"></select></label>
+        <label class="f"><span data-t="qMood"></span><select id="mood"></select></label>
+      </div>
+      <details><summary data-t="howTitle"></summary><p data-t="howText"></p></details>
+    </div>
+
+    <div class="card">
+      <div class="row between"><h2 data-t="todayTitle"></h2><span class="sample-tag" id="sampleTag" data-t="sampleTag"></span></div>
+      <div class="scorebox">
+        <div class="ring" aria-live="polite">
+          <svg viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="86" fill="none" stroke="var(--mist)" stroke-width="16"/><circle id="ringArc" cx="100" cy="100" r="86" fill="none" stroke="var(--olive)" stroke-width="16" stroke-linecap="round" stroke-dasharray="0 541"/></svg>
+          <div class="num"><b id="scoreNum">--</b><span data-t="of100"></span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+          <div class="row"><span class="band none" id="band"></span><span class="conf muted" id="conf"></span></div>
+          <div class="parts" id="parts"></div>
+        </div>
+      </div>
+      <div class="metrics">
+        <div class="m"><span class="k" data-t="mHR"></span><span class="v" id="mHR">--</span><span class="u" data-t="uHR"></span></div>
+        <div class="m"><span class="k" data-t="mHRV"></span><span class="v" id="mHRV">--</span><span class="u">RMSSD · ms</span></div>
+        <div class="m"><span class="k" data-t="mResp"></span><span class="v" id="mResp">--</span><span class="u" data-t="uResp"></span></div>
+        <div class="m"><span class="k" data-t="mStress"></span><span class="v" id="mStress">--</span><span class="u" data-t="of100"></span></div>
+      </div>
+      <canvas class="sig" id="sig" aria-hidden="true"></canvas>
+      <div class="row between"><h2 data-t="coachTitle"></h2><span class="muted small" id="coachSrc"></span></div>
+      <div class="row"><button class="primary" id="coachBtn" type="button" data-t="coachBtn"></button><button class="ghost" id="coachStop" type="button" hidden data-t="stop"></button></div>
+      <div class="coach" id="coach" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <div class="card assist">
+    <div class="head">
+      <div class="spark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 Q13 10 22 12 Q13 14 12 22 Q11 14 2 12 Q11 10 12 2Z" fill="#14203A"/></svg></div>
+      <div style="min-width:0"><h2 data-t="assistTitle"></h2><div class="muted small" data-t="assistSub"></div></div>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="chat" id="chat" aria-live="polite"></div>
+    <form class="row" id="askForm">
+      <input type="text" id="ask" style="flex:1;min-width:200px" autocomplete="off">
+      <button class="gold" type="submit" id="askBtn" data-t="send"></button>
+    </form>
+  </div>
+
+  <div class="plans" id="plans"></div>
+  <p class="note" data-t="note"></p>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const FS = 30, MAX_SEC = 30;
+let roi = {cx:.5, cy:.27, w:.30, h:.16};
+let current = null, isSampleRes = true, stopFlag = false, sampleFn = null, finishScan = null, coachCtl = null, lastReportSrc = '';
+let history = []; let lastStatus = ['boot'];
+function setStatus(key, ...args){ lastStatus=[key,...args]; const v=T[lang].st[key]; $('status').textContent = typeof v==='function' ? v(...args) : v; } // {q,a} pairs for the assistant
+const store = { get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }, set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} } };
+let lang = store.get('mirah.lang') || 'jo';
+
+// ---------- copy: Jordanian, Egyptian, English ----------
+const T = {
+ jo:{ dir:'rtl', html:'ar-JO', pill:'النسخة التجريبية 2.0', scanTitle:'فحص 30 ثانية', privacy:'الفيديو بنحلّل على جهازك وما بينرفع',
+  emptyText:'صوّر وجهك بالكاميرا الأمامية 20 لـ 30 ثانية بضو طبيعي وبدون حركة، وبعدين ارفع المقطع هون.', roi:'منطقة القياس · اكبس لتحرّكها',
+  upload:'ارفع سيلفي فيديو', demo:'جرّب بعيّنة جاهزة', stop:'وقّف', qSleep:'كم ساعة نمت مبارح؟', qMood:'كيف حاسس حالك هلّق؟',
+  sleepOpts:['أقل من 5','5 لـ 6','7 لـ 8','أكثر من 8'], moodOpts:['نشيط','عادي','تعبان','متوتر'],
+  howTitle:'كيف بنقيس؟', howText:'مع كل نبضة بيندفع الدم بالشعيرات تحت الجلد وبيتغيّر لونه شوي كثير. بناخد متوسط ألوان الجبهة بكل إطار، بنطلّع الإشارة بطريقة CHROM، وبنحسب النبض وتباين النبض والتنفس. بعدين بنجمعهم مع نومك وشعورك بنتيجة وحدة من 100.',
+  todayTitle:'نتيجة مرآة اليوم', sampleTag:'مثال من عيّنة تجريبية', of100:'من 100',
+  bands:{low:'محتاج انتباه', mid:'منيح', high:'ممتاز', none:'ما في نتيجة'}, conf:{good:'الثقة: عالية', mid:'الثقة: متوسطة', bad:'الإشارة ضعيفة، ما بنعطي رقم'},
+  parts:['راحة القلب','التوازن والتوتر','التنفس','النوم والشعور','الانتظام'],
+  mHR:'النبض', uHR:'نبضة/دقيقة', mHRV:'تباين النبض', mResp:'التنفس', uResp:'نَفَس/دقيقة', mStress:'مؤشر التوتر',
+  coachTitle:'تقرير اليوم', coachBtn:'اكتبلي تقريري', coachThinking:'المساعد عم يقرأ نتيجتك...',
+  srcAuto:'تقرير تلقائي مختصر', srcAI:'كتبه المساعد الذكي من قراءاتك', srcOff:'تقرير تلقائي مختصر (التقرير الذكي الكامل بالتطبيق)', srcBusy:'تقرير تلقائي (طلبات كثير، جرّب بعد شوي)', srcErr:'تقرير تلقائي (انقطع الاتصال، جرّب كمان مرة)',
+  assistTitle:'المساعد الذكي', assistSub:'اسأل عن أي إشي بالتطبيق أو عن صحتك اليومية، وبجاوبك بلهجتك. ما رح تتوه.',
+  chips:['شو يعني نتيجتي؟','كيف بتنحسب النتيجة من 100؟','قديش سعر باقة العيلة؟','هل الفيديو تبعي بينحفظ؟','كيف أحسّن نومي؟'],
+  ph:'اكتب سؤالك... مثلاً: القهوة الصبح بترفع نبضي؟', send:'اسأل', you:'إنت', faqTag:'جواب جاهز من دليل مرآة',
+  thinking:'لحظة...', aiErr:'ما قدرت أرد هلّق. جرّب كمان مرة.',
+  plans:[['مرآة مجاني','0$','فحص يومي ونتيجة و 5 أسئلة للمساعد'],['مرآة بلس','1.99$','/شهر · فحص ومساعد بلا حدود وتقرير للطبيب'],['مرآة العيلة','3.99$','/شهر · لحد 5 أفراد، تابع أهلك من أي بلد'],['مرآة للأعمال','1$','/موظف شهرياً · لوحة عافية للفريق']],
+  note:'مرآة بتعطي مؤشرات عافية تقديرية وما بتشخّص أي مرض. إذا حسّيت بوجع بصدرك أو ضيق نفس أو دوخة، اتصل بالطوارئ على 911 فوراً.',
+  st:{boot:'هلّق شايف نتيجة عيّنة تجريبية. ارفع سيلفي فيديو لتعرف نتيجتك إنت.', load:'عم نحمّل المقطع...', meas:(t,d)=>`عم نقيس... ${t} من ${d} ثانية. خلّي وجهك ثابت.`, done:(s,n)=>`خلص القياس: ${s} ثانية، ${n} إطار.`, weak:'خلص القياس بس الإشارة ضعيفة. أحسن تعيد التصوير بضو أقوى.', short:'المقطع قصير كثير. بدنا 10 ثواني على الأقل.', decode:'ما قدرنا نفتح المقطع. جرّب ملف MP4 أو MOV قصير، أو العيّنة الجاهزة.', sample:'هاي نتيجة إشارة مولّدة للتجربة (النبض فيها 72). ارفع مقطعك لتقيس نبضك إنت.'},
+  rep:{ sum:'الخلاصة', mean:'شو بتعني الأرقام', plan:'خطة اليوم', weak:'الإشارة ضعيفة هالمرة فما رح نعطيك رقم. أعد الفحص جنب الشبّاك، ثبّت الجوال، وما تحكي وإنت بتصوّر.',
+   line1:(s,b)=>`نتيجتك اليوم ${s} من 100، يعني ${b}.`, hr:(h)=>`نبضك ${h} نبضة بالدقيقة، ${h<60?'هادي كثير':h<=90?'ضمن الطبيعي للراحة':'أعلى من المعتاد للراحة'}.`, hrv:(r)=>`تباين النبض ${r} ملّي ثانية، ${r>=40?'وهاد مؤشر توازن منيح':'وهاد بيدل إن جسمك متوتر شوي'}.`,
+   tipLow:'خذ دقيقتين تنفّس بطيء: شهيق 4 ثواني وزفير 6، واشرب مي، وأعد الفحص بعد ساعة.', tipMid:'مشي 10 دقايق وكاسة مي هلّق، وحاول تنام بكير الليلة.', tipHigh:'يومك ماشي منيح! حافظ عليه بمشي خفيف وأكل خفيف.' },
+  dialect:'احكِ باللهجة الأردنية البيضاء المفهومة (مثل: شو، هلّق، منيح، بدك، كثير، إشي) بدون مبالغة.' },
+ eg:{ dir:'rtl', html:'ar-EG', pill:'النسخة التجريبية 2.0', scanTitle:'فحص 30 ثانية', privacy:'الفيديو بيتحلّل على موبايلك ومش بيترفع',
+  emptyText:'صوّر وشّك بالكاميرا الأمامية من 20 لـ 30 ثانية في نور طبيعي ومن غير حركة، وبعدين ارفع المقطع هنا.', roi:'منطقة القياس · دوس عشان تحرّكها',
+  upload:'ارفع سيلفي فيديو', demo:'جرّب بعيّنة جاهزة', stop:'وقّف', qSleep:'نمت كام ساعة امبارح؟', qMood:'حاسس بإيه دلوقتي؟',
+  sleepOpts:['أقل من 5','5 لـ 6','7 لـ 8','أكتر من 8'], moodOpts:['نشيط','عادي','تعبان','متوتر'],
+  howTitle:'بنقيس إزاي؟', howText:'مع كل نبضة الدم بيندفع في الشعيرات تحت الجلد ولونه بيتغيّر تغيير صغير أوي. بناخد متوسط ألوان الجبهة في كل فريم، ونطلّع الإشارة بطريقة CHROM، ونحسب النبض وتباين النبض والتنفس. وبعدين نجمعهم مع نومك وإحساسك في نتيجة واحدة من 100.',
+  todayTitle:'نتيجة مرآة النهارده', sampleTag:'مثال من عيّنة تجريبية', of100:'من 100',
+  bands:{low:'محتاج انتباه', mid:'كويس', high:'ممتاز', none:'مفيش نتيجة'}, conf:{good:'الثقة: عالية', mid:'الثقة: متوسطة', bad:'الإشارة ضعيفة، مش هنديك رقم'},
+  parts:['راحة القلب','التوازن والتوتر','التنفس','النوم والإحساس','الانتظام'],
+  mHR:'النبض', uHR:'نبضة/دقيقة', mHRV:'تباين النبض', mResp:'التنفس', uResp:'نَفَس/دقيقة', mStress:'مؤشر التوتر',
+  coachTitle:'تقرير النهارده', coachBtn:'اكتبلي تقريري', coachThinking:'المساعد بيقرا نتيجتك...',
+  srcAuto:'تقرير تلقائي مختصر', srcAI:'كتبه المساعد الذكي من قراءاتك', srcOff:'تقرير تلقائي مختصر (التقرير الذكي الكامل في التطبيق)', srcBusy:'تقرير تلقائي (طلبات كتير، جرّب كمان شوية)', srcErr:'تقرير تلقائي (الاتصال قطع، جرّب تاني)',
+  assistTitle:'المساعد الذكي', assistSub:'اسأل عن أي حاجة في التطبيق أو عن صحتك اليومية، وهرد عليك بلهجتك. مش هتتوه.',
+  chips:['نتيجتي معناها إيه؟','النتيجة من 100 بتتحسب إزاي؟','باقة العيلة بكام؟','الفيديو بتاعي بيتحفظ؟','أحسّن نومي إزاي؟'],
+  ph:'اكتب سؤالك... مثلاً: القهوة الصبح بتعلّي النبض؟', send:'اسأل', you:'إنت', faqTag:'رد جاهز من دليل مرآة',
+  thinking:'ثانية واحدة...', aiErr:'مش قادر أرد دلوقتي. جرّب تاني.',
+  plans:[['مرآة مجاني','0$','فحص يومي ونتيجة و 5 أسئلة للمساعد'],['مرآة بلس','1.99$','/شهر · فحص ومساعد من غير حدود وتقرير للدكتور'],['مرآة العيلة','3.99$','/شهر · لحد 5 أفراد، تابع أهلك من أي بلد'],['مرآة للأعمال','1$','/موظف في الشهر · لوحة عافية للفريق']],
+  note:'مرآة بتدي مؤشرات عافية تقديرية ومش بتشخّص أي مرض. لو حسّيت بوجع في صدرك أو ضيق تنفس أو دوخة، اتصل بالإسعاف على 123 فوراً.',
+  st:{boot:'إنت شايف دلوقتي نتيجة عيّنة تجريبية. ارفع سيلفي فيديو عشان تعرف نتيجتك إنت.', load:'بنحمّل المقطع...', meas:(t,d)=>`بنقيس... ${t} من ${d} ثانية. خلّي وشّك ثابت.`, done:(s,n)=>`القياس خلص: ${s} ثانية، ${n} فريم.`, weak:'القياس خلص بس الإشارة ضعيفة. الأحسن تصوّر تاني في نور أقوى.', short:'المقطع قصير أوي. محتاجين 10 ثواني على الأقل.', decode:'مقدرناش نفتح المقطع. جرّب ملف MP4 أو MOV قصير، أو العيّنة الجاهزة.', sample:'دي نتيجة إشارة متولّدة للتجربة (النبض فيها 72). ارفع مقطعك عشان تقيس نبضك إنت.'},
+  rep:{ sum:'الخلاصة', mean:'الأرقام معناها إيه', plan:'خطة النهارده', weak:'الإشارة ضعيفة المرة دي فمش هنديك رقم. اعمل الفحص تاني جنب الشباك، ثبّت الموبايل، ومتتكلمش وإنت بتصوّر.',
+   line1:(s,b)=>`نتيجتك النهارده ${s} من 100، يعني ${b}.`, hr:(h)=>`نبضك ${h} نبضة في الدقيقة، ${h<60?'هادي جداً':h<=90?'في الطبيعي للراحة':'أعلى من المعتاد للراحة'}.`, hrv:(r)=>`تباين النبض ${r} ملّي ثانية، ${r>=40?'ودي علامة توازن كويسة':'وده معناه إن جسمك متوتر شوية'}.`,
+   tipLow:'خد دقيقتين تنفّس بطيء: شهيق 4 ثواني وزفير 6، واشرب مية، واعمل الفحص تاني بعد ساعة.', tipMid:'اتمشّى 10 دقايق واشرب كوباية مية دلوقتي، وحاول تنام بدري النهارده.', tipHigh:'يومك ماشي حلو! كمّل بمشي خفيف وأكل خفيف.' },
+  dialect:'اتكلم باللهجة المصرية المفهومة (زي: إيه، دلوقتي، كويس، عايز، أوي، حاجة) من غير مبالغة.' },
+ en:{ dir:'ltr', html:'en', pill:'Prototype 2.0', scanTitle:'30-second scan', privacy:'Video is analysed on your device, never uploaded',
+  emptyText:'Record your face with the front camera for 20 to 30 seconds in natural light, keep still, then upload the clip here.', roi:'Measuring area · tap to move',
+  upload:'Upload a selfie video', demo:'Try a sample', stop:'Stop', qSleep:'How long did you sleep last night?', qMood:'How do you feel right now?',
+  sleepOpts:['Under 5 h','5 to 6 h','7 to 8 h','Over 8 h'], moodOpts:['Energetic','Normal','Tired','Stressed'],
+  howTitle:'How does it measure?', howText:'With every heartbeat, blood rushes through the capillaries under your skin and its colour shifts very slightly. We average the forehead colour in each frame, extract the signal with the CHROM method, and compute heart rate, heart-rate variability and breathing. Then we combine them with your sleep and mood into one score out of 100.',
+  todayTitle:"Today's Mir'ah Score", sampleTag:'Example from a test sample', of100:'out of 100',
+  bands:{low:'Needs attention', mid:'Good', high:'Excellent', none:'No score'}, conf:{good:'Confidence: high', mid:'Confidence: medium', bad:'Weak signal, no score shown'},
+  parts:['Heart at rest','Balance & stress','Breathing','Sleep & mood','Consistency'],
+  mHR:'Heart rate', uHR:'bpm', mHRV:'HRV', mResp:'Breathing', uResp:'breaths/min', mStress:'Stress index',
+  coachTitle:"Today's report", coachBtn:'Write my report', coachThinking:'The assistant is reading your results...',
+  srcAuto:'Short automatic report', srcAI:'Written by the Smart Assistant from your readings', srcOff:'Short automatic report (the full AI report is in the app)', srcBusy:'Automatic report (too many requests, try again shortly)', srcErr:'Automatic report (connection dropped, try again)',
+  assistTitle:'Smart Assistant', assistSub:'Ask anything about the app or your everyday health. You will never feel lost.',
+  chips:['What does my score mean?','How is the score out of 100 calculated?','How much is the Family plan?','Is my video stored?','How can I sleep better?'],
+  ph:'Type your question... e.g. does morning coffee raise my heart rate?', send:'Ask', you:'You', faqTag:"Ready answer from the Mir'ah guide",
+  thinking:'One moment...', aiErr:"I couldn't answer right now. Please try again.",
+  plans:[["Mir'ah Free",'$0','Daily scan, score and 5 assistant questions'],["Mir'ah Plus",'$1.99','/month · unlimited scans and assistant, doctor report'],["Mir'ah Family",'$3.99','/month · up to 5 people, follow your parents from anywhere'],["Mir'ah Business",'$1','/employee/month · team wellbeing dashboard']],
+  note:"Mir'ah gives estimated wellness indicators and does not diagnose any disease. If you have chest pain, shortness of breath or dizziness, call emergency services now (911 in Jordan, 123 in Egypt).",
+  st:{boot:'You are looking at a test sample result. Upload a selfie video to get your own score.', load:'Loading the clip...', meas:(t,d)=>`Measuring... ${t} of ${d} s. Keep your face still.`, done:(s,n)=>`Done: ${s} s, ${n} frames.`, weak:'Done, but the signal is weak. Try again in brighter light.', short:'The clip is too short. We need at least 10 seconds.', decode:"Couldn't open this clip. Try a short MP4 or MOV, or the sample.", sample:'This is a generated test signal (its true pulse is 72 bpm). Upload your clip to measure yours.'},
+  rep:{ sum:'Summary', mean:'What the numbers mean', plan:"Today's plan", weak:"The signal was weak this time, so we won't show a number. Scan again near a window, hold the phone steady, and don't talk while recording.",
+   line1:(s,b)=>`Your score today is ${s} out of 100: ${b.toLowerCase()}.`, hr:(h)=>`Heart rate ${h} bpm, ${h<60?'very calm':h<=90?'within the normal resting range':'higher than usual for rest'}.`, hrv:(r)=>`HRV ${r} ms, ${r>=40?'a sign of good balance':'suggesting your body is a little stressed'}.`,
+   tipLow:'Take two minutes of slow breathing (in for 4, out for 6), drink water, and scan again in an hour.', tipMid:'A 10-minute walk and a glass of water now, and try to sleep earlier tonight.', tipHigh:'Your day is off to a great start. Keep it going with a light walk and a light meal.' },
+  dialect:'Reply in clear, warm, simple English.' }
+};
+
+// ---------- app knowledge for the assistant ----------
+const KB = `معلومات عن تطبيق مرآة (Mir'ah):
+- رفيق صحي يومي على الجوال. يطلق حالياً في الأردن ومصر، بالعربية (لهجة أردنية أو مصرية) والإنجليزية.
+- فحص 30 ثانية بسيلفي فيديو يقرأ من الوجه بتقنية rPPG: نبض الراحة، تباين النبض HRV (RMSSD)، معدل التنفس، ومؤشر التوتر.
+- «نتيجة مرآة» من 100 = راحة القلب 25 + التوازن والتوتر 30 + التنفس 15 + النوم والشعور (سؤالان) 20 + الانتظام آخر 7 أيام 10. 0-49 محتاج انتباه، 50-74 منيح/كويس، 75-100 ممتاز.
+- مع كل نتيجة درجة ثقة (عالية/متوسطة)، وإذا كانت الإشارة ضعيفة لا تظهر نتيجة ويُطلب إعادة الفحص. نصائح لفحص أفضل: ضوء طبيعي أمام الوجه، الجوال ثابت، عدم الكلام، إبعاد الشعر عن الجبهة.
+- الخصوصية: الفيديو يُحلَّل على جهاز المستخدم ولا يُرفع أبداً، وتُحفظ الأرقام فقط مشفّرة، وفق قانون حماية البيانات الأردني رقم 24 لسنة 2023 والمصري رقم 151 لسنة 2020.
+- الباقات (أسعار رمزية بالدولار وتدفع بالعملة المحلية): مجاني 0$ (فحص يومي + النتيجة + 5 أسئلة للمساعد يومياً)؛ بلس 1.99$ شهرياً أو 14.99$ سنوياً (فحص ومساعد بلا حدود، اتجاهات شهرية، تقرير للطبيب)؛ العيلة 3.99$ شهرياً (حتى 5 أفراد، متابعة الأهل بموافقتهم من أي بلد)؛ للأعمال 1$ للموظف شهرياً (لوحة عافية مجمّعة لا تكشف أحداً). الدفع: CliQ و eFAWATEERcom في الأردن، فوري والمحافظ الإلكترونية في مصر.
+- الميزات: النتيجة اليومية، تقرير اليوم، المساعد الذكي، متابعة العيلة، تقرير أسبوعي للطبيب يُشارك بضغطة، تحدي 7 أيام.
+- مرآة منتج عافية وليس جهازاً طبياً، ولا يشخّص. الطوارئ: 911 في الأردن، 123 للإسعاف في مصر.`;
+const RULES = `أنت «المساعد الذكي» داخل تطبيق مرآة. مهمتك: ألا يتوه أي مستخدم. تجيب عن أي سؤال عن التطبيق (الميزات، الأسعار، الخصوصية، طريقة الفحص، معنى النتيجة) أو عن العافية والصحة اليومية (النوم، التوتر، التنفس، النشاط، الماء، الصيام).
+قواعد ثابتة: لا تشخّص أي مرض ولا تقترح أدوية أو جرعات. قل «مؤشر» لا «تشخيص». عند أعراض خطيرة (ألم صدر، ضيق نفس، إغماء، أفكار إيذاء النفس) وجّه فوراً للطوارئ برقم البلد. إذا كانت القراءة غير معتادة جداً (نبض راحة فوق 110 أو تحت 45) انصح بلطف بمراجعة طبيب. لا تخترع أرقاماً أو ميزات أو أسعاراً غير المذكورة. إذا كان السؤال خارج الصحة والتطبيق، أجب بجملة لطيفة وأعد الحديث لما تقدر تساعد فيه. كن قصيراً وواضحاً ودافئاً.`;
+
+// ---------- offline answers when Claude is not available ----------
+const FAQ = [
+ {k:/(نتيج|score|100|تنحسب|بتتحسب|calculat)/i, jo:'نتيجة مرآة رقم من 100 بيلخّص حالتك اليوم: راحة القلب 25، التوازن والتوتر 30، التنفس 15، النوم والشعور 20، والانتظام 10. من 75 وفوق ممتاز، من 50 لـ 74 منيح، وتحت 50 يعني جسمك محتاج انتباه اليوم، مش تشخيص.', eg:'نتيجة مرآة رقم من 100 بيلخّص حالتك النهارده: راحة القلب 25، التوازن والتوتر 30، التنفس 15، النوم والإحساس 20، والانتظام 10. من 75 وطالع ممتاز، من 50 لـ 74 كويس، وتحت 50 معناه إن جسمك محتاج انتباه النهارده، مش تشخيص.', en:'Your Mir\'ah Score sums up today out of 100: heart at rest 25, balance and stress 30, breathing 15, sleep and mood 20, consistency 10. 75+ is excellent, 50 to 74 is good, under 50 means your body needs some attention today. It is an indicator, not a diagnosis.'},
+ {k:/(سعر|اسعار|أسعار|بكام|قديش|باق|عيل|price|plan|cost|family|\$)/i, jo:'الأسعار رمزية: المجاني ببلاش، بلس 1.99$ بالشهر (أو 14.99$ بالسنة)، العيلة 3.99$ بالشهر لحد 5 أفراد، وللشركات 1$ للموظف. بتدفع بالدينار عن طريق CliQ أو eFAWATEERcom.', eg:'الأسعار رمزية: المجاني ببلاش، بلس 1.99$ في الشهر (أو 14.99$ في السنة)، العيلة 3.99$ في الشهر لحد 5 أفراد، وللشركات 1$ للموظف. بتدفع بالجنيه عن طريق فوري أو المحافظ الإلكترونية.', en:'Prices are symbolic: Free costs nothing, Plus is $1.99/month (or $14.99/year), Family is $3.99/month for up to 5 people, and Business is $1 per employee. You pay in local currency (CliQ or eFAWATEERcom in Jordan, Fawry or mobile wallets in Egypt).'},
+ {k:/(فيديو|خصوص|بينحفظ|بيتحفظ|بيانات|privacy|video|stored|data)/i, jo:'لا، الفيديو بيتحلّل على جوالك وما بينرفع لأي سيرفر. بنحفظ الأرقام بس، ومشفّرة، حسب قانون حماية البيانات الأردني.', eg:'لأ، الفيديو بيتحلّل على موبايلك ومش بيترفع على أي سيرفر. بنحفظ الأرقام بس ومتشفّرة، حسب قانون حماية البيانات المصري.', en:'No. The video is analysed on your phone and never uploaded. Only the numbers are kept, encrypted, under Jordanian and Egyptian data-protection laws.'},
+ {k:/(نوم|نمت|sleep)/i, jo:'لنوم أحسن: نام وصحى بنفس الوقت، بلاش شاشات قبل النوم بنص ساعة، خفّف القهوة بعد العصر، وخلّي الغرفة معتمة وباردة. ومرآة رح توريك أثر هالإشي على نتيجتك.', eg:'عشان تنام أحسن: نام واصحى في نفس المعاد، بلاش شاشات قبل النوم بنص ساعة، قلّل القهوة بعد العصر، وخلّي الأوضة ضلمة وباردة. ومرآة هتوريك تأثير ده على نتيجتك.', en:'For better sleep: keep the same bed and wake times, no screens for 30 minutes before bed, less caffeine after mid-afternoon, and a dark, cool room. Mir\'ah will show you the effect on your score.'},
+ {k:/(تباين|hrv|توتر|stress)/i, jo:'تباين النبض هو الفرق الصغير بين نبضة ونبضة. كل ما كان أعلى، جسمك أهدى وأقدر يتعامل مع الضغط. التوتر وقلة النوم بينزّلوه، والتنفس البطيء والمشي بيرفعوه.', eg:'تباين النبض هو الفرق الصغير بين كل نبضة والتانية. كل ما يكون أعلى، جسمك أهدى وقادر يستحمل الضغط. التوتر وقلة النوم بيقلّلوه، والتنفس البطيء والمشي بيعلّوه.', en:'HRV is the tiny variation between heartbeats. Higher usually means a calmer body that handles pressure better. Stress and poor sleep lower it; slow breathing and walking raise it.'},
+ {k:/(دقيق|دقة|موثوق|ثقة|accura|trust)/i, jo:'مع كل نتيجة بنعرضلك درجة ثقة، وإذا الإشارة ضعيفة ما بنعطيك رقم أصلاً. وبنخطط لدراسة مقارنة مع أجهزة طبية على 500 مشارك وبننشر نتائجها زي ما هي.', eg:'مع كل نتيجة بنعرضلك درجة الثقة، ولو الإشارة ضعيفة مش بنديك رقم خالص. وبنخطط لدراسة مقارنة مع أجهزة طبية على 500 مشارك وهننشر نتايجها زي ما هي.', en:'Every score comes with a confidence level, and if the signal is weak we show no number at all. We plan a comparison study against medical devices with 500 participants and will publish the results as they are.'},
+ {k:/(فحص|اصور|أصور|صوّر|scan|record)/i, jo:'افتح الكاميرا الأمامية، خلّي وجهك بضو طبيعي، ثبّت الجوال 30 ثانية وما تحكي، وبعدين ارفع المقطع. بعدها جاوب على سؤالين عن نومك وشعورك.', eg:'افتح الكاميرا الأمامية، خلّي وشّك في نور طبيعي، ثبّت الموبايل 30 ثانية ومتتكلمش، وبعدين ارفع المقطع. وبعدها جاوب على سؤالين عن نومك وإحساسك.', en:'Open the front camera, face natural light, hold the phone still for 30 seconds without talking, then upload the clip and answer two quick questions about sleep and mood.'}
+];
+const FAQ_MISS = {jo:'هالسؤال بدو المساعد الذكي الكامل، وهو جاهز بالتطبيق. جرّب تسألني عن النتيجة أو الأسعار أو الخصوصية أو النوم.', eg:'السؤال ده محتاج المساعد الذكي الكامل، وده موجود في التطبيق. جرّب تسألني عن النتيجة أو الأسعار أو الخصوصية أو النوم.', en:'That question needs the full Smart Assistant, available in the app. Try asking about the score, prices, privacy or sleep.'};
+
+function fft(re, im){ const n=re.length; for(let i=1,j=0;i<n;i++){let bit=n>>1;for(;j&bit;bit>>=1)j^=bit;j^=bit;if(i<j){[re[i],re[j]]=[re[j],re[i]];[im[i],im[j]]=[im[j],im[i]];}}
+  for(let len=2;len<=n;len<<=1){const a=-2*Math.PI/len,wr=Math.cos(a),wi=Math.sin(a);for(let i=0;i<n;i+=len){let cr=1,ci=0;for(let j=0;j<len/2;j++){const ur=re[i+j],ui=im[i+j],k=i+j+len/2,vr=re[k]*cr-im[k]*ci,vi=re[k]*ci+im[k]*cr;re[i+j]=ur+vr;im[i+j]=ui+vi;re[k]=ur-vr;im[k]=ui-vi;const t=cr*wr-ci*wi;ci=cr*wi+ci*wr;cr=t;}}}}
+function resample(ts, vals, fs){ const out=[]; const t0=ts[0], t1=ts[ts.length-1]; let j=0;
+  for(let t=t0;t<=t1;t+=1/fs){ while(j<ts.length-2 && ts[j+1]<t) j++; const a=ts[j], b=ts[j+1]; const f=b>a?(t-a)/(b-a):0; out.push(vals[j]+(vals[j+1]-vals[j])*Math.max(0,Math.min(1,f))); } return out; }
+function detrend(x, win){ const out=new Array(x.length); let s=0; const q=[]; const h=Math.floor(win/2);
+  const pre=[0]; for(const v of x) pre.push(pre[pre.length-1]+v);
+  for(let i=0;i<x.length;i++){ const a=Math.max(0,i-h), b=Math.min(x.length,i+h+1); out[i]=x[i]-(pre[b]-pre[a])/(b-a);} return out; }
+function std(x){const m=x.reduce((a,b)=>a+b,0)/x.length;return Math.sqrt(x.reduce((a,b)=>a+(b-m)**2,0)/x.length)||1e-9;}
+function bandpass(x, fs, lo, hi){ let n=1; while(n<x.length*2) n<<=1; const re=new Float64Array(n), im=new Float64Array(n); x.forEach((v,i)=>re[i]=v);
+  fft(re,im); const spec=[]; for(let k=0;k<n;k++){ const f=Math.min(k,n-k)*fs/n; if(f<lo||f>hi){re[k]=0;im[k]=0;} if(k<n/2) spec.push({f, p:re[k]*re[k]+im[k]*im[k]}); }
+  for(let k=0;k<n;k++) im[k]=-im[k]; fft(re,im); const y=[]; for(let i=0;i<x.length;i++) y.push(re[i]/n); return {y, spec}; }
+function chrom(R,G,B){ const mr=R.reduce((a,b)=>a+b)/R.length, mg=G.reduce((a,b)=>a+b)/G.length, mb=B.reduce((a,b)=>a+b)/B.length;
+  const X=[],Y=[]; for(let i=0;i<R.length;i++){const r=R[i]/mr,g=G[i]/mg,b=B[i]/mb; X.push(3*r-2*g); Y.push(1.5*r+g-1.5*b);} const a=std(X)/std(Y); return X.map((v,i)=>v-a*Y[i]); }
+function analyze(ts, R, G, B){
+  const r=resample(ts,R,FS), g=resample(ts,G,FS), b=resample(ts,B,FS);
+  const raw=chrom(r,g,b); const x=detrend(raw, FS*1.5);
+  const {y, spec}=bandpass(x, FS, 0.7, 3.0);
+  let best={f:0,p:0}, tot=0; for(const s of spec){ if(s.f>=0.7&&s.f<=3.0){ tot+=s.p; if(s.p>best.p) best=s; } }
+  let near=0; for(const s of spec){ if(Math.abs(s.f-best.f)<0.08 || Math.abs(s.f-2*best.f)<0.08) near+=s.p; }
+  const snr = near/Math.max(tot-near,1e-12);
+  const hr = best.f*60;
+  // peaks for HRV
+  const minGap=Math.floor(FS*60/Math.min(180,hr*1.45)); const peaks=[];
+  for(let i=2;i<y.length-2;i++){ if(y[i]>y[i-1]&&y[i]>=y[i+1]&&y[i]>0){ if(!peaks.length||i-peaks[peaks.length-1]>=minGap) peaks.push(i); else if(y[i]>y[peaks[peaks.length-1]]) peaks[peaks.length-1]=i; } }
+  const ibi=[]; for(let i=1;i<peaks.length;i++) ibi.push((peaks[i]-peaks[i-1])/FS*1000);
+  const med=[...ibi].sort((a,b)=>a-b)[Math.floor(ibi.length/2)]||60000/hr; const clean=ibi.filter(v=>Math.abs(v-med)<med*0.25);
+  let rm=0; for(let i=1;i<clean.length;i++) rm+=(clean[i]-clean[i-1])**2; const rmssd=clean.length>2?Math.sqrt(rm/(clean.length-1)):0;
+  // respiration from amplitude/baseline of the slow component
+  const slow=bandpass(detrend(raw, FS*12), FS, 0.1, 0.5); let rb={f:0,p:0}; for(const s of slow.spec){ if(s.f>=0.12&&s.f<=0.5&&s.p>rb.p) rb=s; }
+  const resp=rb.f*60;
+  const stress=Math.max(5,Math.min(95,Math.round(92-rmssd*1.15+Math.max(0,hr-75)*0.6)));
+  const quality = snr>1.2?'good':snr>0.55?'mid':'bad';
+  return {hr:Math.round(hr), rmssd:Math.round(rmssd), resp:Math.round(resp), stress, quality, snr:+snr.toFixed(2), y, seconds:+(ts[ts.length-1]-ts[0]).toFixed(1)};
+}
+
+
+function synth(){ const ts=[],R=[],G=[],B=[]; let ph=0; let seed=7; const rnd=()=>{seed=(seed*16807)%2147483647;return seed/2147483647-.5;};
+  for(let i=0;i<FS*MAX_SEC;i++){ const t=i/FS; const inst=72+3.2*Math.sin(2*Math.PI*0.25*t)+1.2*Math.sin(2*Math.PI*0.07*t); ph+=2*Math.PI*inst/60/FS;
+    const breath=Math.sin(2*Math.PI*0.25*t); const pulse=(Math.sin(ph)+0.35*Math.sin(2*ph-0.6))*(1+0.15*breath);
+    ts.push(t); R.push(150+0.25*pulse+0.4*breath+0.25*rnd()); G.push(110+0.9*pulse+0.5*breath+0.3*rnd()); B.push(90+0.15*pulse+0.3*breath+0.25*rnd()); }
+  return {ts,R,G,B}; }
+
+
+// ---------- Mir'ah Score ----------
+const clamp01 = v => Math.max(0, Math.min(1, v));
+function scanDays(){ try{ return JSON.parse(store.get('mirah.days')||'[]'); }catch(e){ return []; } }
+function score(r){
+  if(!r || r.quality==='bad') return null;
+  const heart = 25*clamp01(1 - Math.max(0, Math.abs(r.hr-63)-12)/35);
+  const bal = r.rmssd ? 30*clamp01((r.rmssd-10)/50) : 15;
+  const resp = r.resp ? 15*clamp01(1 - Math.max(0, Math.abs(r.resp-16)-4)/10) : 8;
+  const sl = [3,7,10,8][$('sleep').selectedIndex] , md = [10,7,4,4][$('mood').selectedIndex];
+  const days = scanDays(), today = new Date().toISOString().slice(0,10);
+  const week = days.filter(d => (Date.parse(today)-Date.parse(d))/864e5 < 7).length;
+  const cons = week ? Math.min(10, Math.round(week*10/7)+3) : 5;
+  const parts = [heart, bal, resp, sl+md, cons].map(Math.round);
+  return {total: parts.reduce((a,b)=>a+b,0), parts, max:[25,30,15,20,10]};
+}
+const bandOf = s => s==null ? 'none' : s<50 ? 'low' : s<75 ? 'mid' : 'high';
+
+// ---------- rendering ----------
+function applyLang(){
+  const L = T[lang]; document.documentElement.lang = L.html; document.documentElement.dir = L.dir;
+  document.querySelectorAll('[data-t]').forEach(el => { const v = L[el.dataset.t]; if(typeof v==='string') el.textContent = v; });
+  document.querySelectorAll('.lang button').forEach(b => b.setAttribute('aria-pressed', b.dataset.lang===lang));
+  const fill = (sel, opts, def) => { const i = sel.selectedIndex>=0 ? sel.selectedIndex : def; sel.innerHTML=''; opts.forEach(o => sel.append(new Option(o))); sel.selectedIndex = i; };
+  fill($('sleep'), L.sleepOpts, 2); fill($('mood'), L.moodOpts, 0);
+  $('ask').placeholder = L.ph;
+  $('chips').innerHTML=''; L.chips.forEach(c => { const b=document.createElement('button'); b.type='button'; b.textContent=c; b.onclick=()=>ask(c); $('chips').append(b); });
+  $('plans').innerHTML=''; L.plans.forEach((p,i) => { const d=document.createElement('div'); d.className='plan'+(i===1?' hl':''); const b=document.createElement('b'); b.textContent=p[0]; const pr=document.createElement('div'); pr.className='p'; pr.textContent=p[1]; const sm=document.createElement('small'); sm.textContent=' '+p[2].split(' · ')[0].startsWith('/')?'':''; const s=document.createElement('span'); s.textContent=p[2]; d.append(b,pr,s); $('plans').append(d); });
+  if(current) renderScore();
+  setStatus(...lastStatus);
+  if(!lastReportSrc || lastReportSrc==='auto') { renderReport(fallbackReport(), L.srcAuto); lastReportSrc='auto'; }
+  if(!sampleFn && $('coachSrc').dataset.off) $('coachSrc').textContent = L.srcOff;
+}
+function renderScore(){
+  const L = T[lang], r = current, s = score(r), b = bandOf(s?.total);
+  $('sampleTag').hidden = !isSampleRes;
+  $('scoreNum').textContent = s ? s.total : '--';
+  const arc = $('ringArc'), C = 2*Math.PI*86; arc.setAttribute('stroke-dasharray', `${s? s.total/100*C : 0} ${C}`);
+  arc.setAttribute('stroke', b==='low' ? 'var(--rose)' : b==='mid' ? 'var(--gold)' : 'var(--olive)');
+  const band = $('band'); band.className = 'band '+b; band.textContent = L.bands[b];
+  $('conf').textContent = L.conf[r.quality];
+  $('parts').innerHTML = '';
+  L.parts.forEach((name,i) => { const row=document.createElement('div'); row.className='part'; const n=document.createElement('span'); n.textContent=name; const bar=document.createElement('div'); bar.className='bar'; const fillEl=document.createElement('i'); fillEl.style.width = s ? (s.parts[i]/s.max[i]*100)+'%' : '0'; bar.append(fillEl); const v=document.createElement('em'); v.textContent = s ? `${s.parts[i]}/${s.max[i]}` : '--'; row.append(n,bar,v); $('parts').append(row); });
+  $('mHR').textContent = r.hr||'--'; $('mHRV').textContent = r.rmssd||'--'; $('mResp').textContent = r.resp||'--'; $('mStress').textContent = r.rmssd ? r.stress : '--';
+}
+function show(res, isSample){ current = res; isSampleRes = isSample; renderScore(); drawSig(res.y); lastReportSrc='auto'; renderReport(fallbackReport(), T[lang].srcAuto); }
+function drawSig(y){ const c=$('sig'), dpr=window.devicePixelRatio||1; const w=c.clientWidth, h=c.clientHeight; c.width=w*dpr; c.height=h*dpr; const x=c.getContext('2d'); x.scale(dpr,dpr); x.clearRect(0,0,w,h);
+  const seg=y.slice(-FS*10); const m=Math.max(...seg.map(Math.abs))||1; x.strokeStyle='#E06C5A'; x.lineWidth=2; x.beginPath(); seg.forEach((v,i)=>{const px=i/(seg.length-1)*w, py=h/2-v/m*(h*0.4); i?x.lineTo(px,py):x.moveTo(px,py);}); x.stroke(); }
+function fallbackReport(){
+  const L = T[lang], R = L.rep, r = current; if(!r) return '';
+  const s = score(r); if(!s) return `## ${R.sum}\n${R.weak}`;
+  const b = bandOf(s.total);
+  return [`## ${R.sum}`, R.line1(s.total, L.bands[b]), `## ${R.mean}`, '- '+R.hr(r.hr), r.rmssd ? '- '+R.hrv(r.rmssd) : '', `## ${R.plan}`, '- '+(b==='low'?R.tipLow:b==='mid'?R.tipMid:R.tipHigh)].filter(Boolean).join('\n');
+}
+function renderReport(text, src){ const box=$('coach'); box.innerHTML=''; for(const raw of text.split('\n')){ const l=raw.trim(); if(!l) continue;
+    if(/^#{1,4}\s/.test(l)){ const h=document.createElement('h4'); h.textContent=l.replace(/^#+\s*/,''); box.append(h);} else { const p=document.createElement('p'); p.textContent=l.replace(/\*\*/g,'').replace(/^[-•]\s*/,'• '); box.append(p);} }
+  $('coachSrc').textContent=src||''; }
+function contextText(){
+  const r = current, s = score(r); if(!r) return 'لا توجد قراءة بعد.';
+  const L = T[lang];
+  return `${isSampleRes?'(هذه قراءة عيّنة تجريبية وليست للمستخدم) ':''}قراءات المستخدم اليوم: نتيجة مرآة ${s? s.total+'/100 ('+T.jo.bands[bandOf(s.total)]+')، المكوّنات: راحة القلب '+s.parts[0]+'/25، التوازن '+s.parts[1]+'/30، التنفس '+s.parts[2]+'/15، النوم والشعور '+s.parts[3]+'/20، الانتظام '+s.parts[4]+'/10' : 'لا نتيجة لأن الإشارة ضعيفة'}. نبض الراحة ${r.hr}، RMSSD ${r.rmssd} ms، التنفس ${r.resp}/دقيقة، مؤشر التوتر ${r.stress}/100، جودة الإشارة ${r.quality}. النوم: ${$('sleep').value}. الشعور: ${$('mood').value}.`;
+}
+
+// ---------- video capture ----------
+function placeRoi(){ const r=$('roi'); r.style.width=(roi.w*100)+'%'; r.style.height=(roi.h*100)+'%'; r.style.left=((roi.cx-roi.w/2)*100)+'%'; r.style.top=((roi.cy-roi.h/2)*100)+'%'; }
+$('stage').addEventListener('click',e=>{ if($('roi').hidden) return; const s=$('stage').getBoundingClientRect(); roi.cx=Math.min(1-roi.w/2,Math.max(roi.w/2,(e.clientX-s.left)/s.width)); roi.cy=Math.min(1-roi.h/2,Math.max(roi.h/2,(e.clientY-s.top)/s.height)); placeRoi(); });
+function coverMap(vw,vh,sw,sh){ const sc=Math.max(sw/vw,sh/vh); const dw=vw*sc, dh=vh*sc; return {sc, ox:(dw-sw)/2, oy:(dh-sh)/2}; }
+async function runVideo(file){
+  const L=T[lang]; stopFlag=false; const v=$('vid'); const url=URL.createObjectURL(file); v.src=url; v.hidden=false; $('empty').hidden=true; $('roi').hidden=false; placeRoi();
+  setStatus('load'); $('stopBtn').hidden=false; $('demoBtn').disabled=true;
+  try{ await new Promise((ok,bad)=>{ v.onloadedmetadata=ok; v.onerror=()=>bad(new Error('decode')); }); }
+  catch(e){ setStatus('decode'); reset(); return; }
+  const c=document.createElement('canvas'), W=160, H=Math.round(160*v.videoHeight/v.videoWidth)||120; c.width=W; c.height=H; const ctx=c.getContext('2d',{willReadFrequently:true});
+  const ts=[],R=[],G=[],B=[]; const dur=Math.min(v.duration||MAX_SEC, MAX_SEC);
+  const grab=(t)=>{ const st=$('stage').getBoundingClientRect(); const m=coverMap(v.videoWidth,v.videoHeight,st.width,st.height);
+    const sx=((roi.cx-roi.w/2)*st.width+m.ox)/m.sc, sy=((roi.cy-roi.h/2)*st.height+m.oy)/m.sc, sw=roi.w*st.width/m.sc, sh=roi.h*st.height/m.sc;
+    ctx.drawImage(v, 0, 0, W, H); const x0=Math.max(0,Math.floor(sx*W/v.videoWidth)), y0=Math.max(0,Math.floor(sy*H/v.videoHeight)), w=Math.max(2,Math.floor(sw*W/v.videoWidth)), h=Math.max(2,Math.floor(sh*H/v.videoHeight));
+    const d=ctx.getImageData(x0,y0,Math.min(w,W-x0),Math.min(h,H-y0)).data; let r=0,g=0,b=0,n=0; for(let i=0;i<d.length;i+=4){r+=d[i];g+=d[i+1];b+=d[i+2];n++;} ts.push(t); R.push(r/n); G.push(g/n); B.push(b/n);
+    $('bar').style.width=Math.min(100,t/dur*100)+'%'; setStatus('meas',Math.floor(t),Math.floor(dur)); };
+  v.currentTime=0; await v.play().catch(()=>{});
+  await new Promise(resolve=>{
+    let fin=false; const done=()=>{ if(!fin){ fin=true; finishScan=null; resolve(); } }; finishScan=done; v.onended=done;
+    if('requestVideoFrameCallback' in HTMLVideoElement.prototype){ const step=(now,meta)=>{ if(stopFlag||meta.mediaTime>=dur-0.04||v.ended){ done(); return; } grab(meta.mediaTime); v.requestVideoFrameCallback(step); }; v.requestVideoFrameCallback(step); }
+    else { const tick=()=>{ if(fin) return; if(stopFlag||v.currentTime>=dur-0.04||v.ended){ done(); return; } grab(v.currentTime); requestAnimationFrame(tick); }; requestAnimationFrame(tick); }
+  });
+  v.pause();
+  if(ts.length<FS*8){ setStatus('short'); reset(); return; }
+  const res=analyze(ts,R,G,B);
+  if(res.quality!=='bad'){ const days=scanDays(), today=new Date().toISOString().slice(0,10); if(!days.includes(today)){ days.push(today); store.set('mirah.days', JSON.stringify(days.slice(-30))); } }
+  show(res,false);
+  res.quality==='bad'?setStatus('weak'):setStatus('done',res.seconds,ts.length); reset(); }
+function reset(){ $('stopBtn').hidden=true; $('demoBtn').disabled=false; $('bar').style.width='100%'; }
+$('file').addEventListener('change',e=>{ const f=e.target.files[0]; if(f) runVideo(f); e.target.value=''; });
+$('stopBtn').addEventListener('click',()=>{ stopFlag=true; finishScan?.(); });
+$('demoBtn').addEventListener('click',()=>{ const s=synth(); show(analyze(s.ts,s.R,s.G,s.B),true); setStatus('sample'); });
+['sleep','mood'].forEach(id => $(id).addEventListener('change',()=>{ if(current){ renderScore(); if(lastReportSrc==='auto') renderReport(fallbackReport(), T[lang].srcAuto); } }));
+document.querySelectorAll('.lang button').forEach(b => b.addEventListener('click',()=>{ lang=b.dataset.lang; store.set('mirah.lang',lang); applyLang(); }));
+
+// ---------- daily report (Claude via sample) ----------
+$('coachBtn').addEventListener('click', async ()=>{
+  const L=T[lang]; if(!current) return;
+  if(!sampleFn){ renderReport(fallbackReport(), L.srcOff); lastReportSrc='auto'; return; }
+  coachCtl=new AbortController(); $('coachBtn').disabled=true; $('coachStop').hidden=false; $('coach').innerHTML=''; const p=document.createElement('p'); p.className='muted'; p.textContent=L.coachThinking; $('coach').append(p); $('coachSrc').textContent='';
+  const R=L.rep;
+  const prompt = `${RULES}\n${L.dialect}\n\n${KB}\n\n${contextText()}\n\nاكتب «تقرير اليوم» للمستخدم بهذا الشكل بالضبط وبحد أقصى 110 كلمات، وبعناوين بنفس اللغة واللهجة:\n## ${R.sum}\nجملتان: نتيجته من 100 ومعناها.\n## ${R.mean}\nثلاث نقاط قصيرة تبدأ بـ "-".\n## ${R.plan}\nثلاث خطوات عملية قصيرة تبدأ بـ "-" تناسب نومه وشعوره.`;
+  try{ const {text}=await sampleFn(prompt,{signal:coachCtl.signal,onText:({text})=>renderReport(text,'')}); renderReport(text,L.srcAI); lastReportSrc='ai'; }
+  catch(e){ lastReportSrc='auto';
+    if(e&&e.code==='cancelled'){ if(e.text){ renderReport(e.text,''); lastReportSrc='ai'; } else renderReport(fallbackReport(), L.srcAuto); }
+    else if(e&&['not_granted','sampling_disabled','not_declared','capability_disabled','capability_removed'].includes(e.code)){ sampleFn=null; renderReport(fallbackReport(),L.srcOff); }
+    else if(e&&e.code==='rate_limited'){ renderReport(fallbackReport(),L.srcBusy); }
+    else { renderReport(fallbackReport(),L.srcErr); } }
+  finally{ $('coachBtn').disabled=false; $('coachStop').hidden=true; }
+});
+$('coachStop').addEventListener('click',()=>coachCtl?.abort());
+
+// ---------- Smart Assistant ----------
+function bubble(cls,text,tag){ const b=document.createElement('div'); b.className='bubble '+cls; b.textContent=text; if(tag){ const s=document.createElement('small'); s.textContent=tag; b.append(s); } $('chat').append(b); $('chat').scrollTop=$('chat').scrollHeight; return b; }
+function faqAnswer(q){ const hit = FAQ.find(f => f.k.test(q)); return hit ? hit[lang] : null; }
+async function ask(q){
+  q=(q||'').trim(); if(!q) return; const L=T[lang]; bubble('me',q);
+  if(!sampleFn){ const a=faqAnswer(q); bubble('ai', a||FAQ_MISS[lang], a?L.faqTag:''); return; }
+  const out=bubble('ai',L.thinking); $('askBtn').disabled=true;
+  const recent = history.slice(-4);
+  const msgs = []; const head = `${RULES}\n${L.dialect}\n\n${KB}\n\n${contextText()}\n\nأجب في 70 كلمة أو أقل، بنفس اللغة واللهجة المطلوبة.\n\nسؤال المستخدم: `;
+  if(recent.length){ recent.forEach((t,i)=>{ msgs.push({role:'user',content:(i===0?head:'')+t.q}); msgs.push({role:'assistant',content:t.a}); }); msgs.push({role:'user',content:q}); }
+  else msgs.push({role:'user',content:head+q});
+  try{ const {text}=await sampleFn(msgs,{cache:false,modelTier:'quick',onText:({text})=>{ out.textContent=text; }}); out.textContent=text; history.push({q,a:text}); }
+  catch(err){ if(err&&['not_granted','sampling_disabled','not_declared','capability_disabled','capability_removed'].includes(err.code)){ sampleFn=null; const a=faqAnswer(q); out.textContent=a||FAQ_MISS[lang]; }
+    else out.textContent=(err&&err.text)||L.aiErr; }
+  finally{ $('askBtn').disabled=false; $('chat').scrollTop=$('chat').scrollHeight; }
+}
+$('askForm').addEventListener('submit', e=>{ e.preventDefault(); const q=$('ask').value; $('ask').value=''; ask(q); });
+
+// ---------- boot ----------
+applyLang();
+(function boot(){ const s=synth(); show(analyze(s.ts,s.R,s.G,s.B),true); setStatus('boot'); })();
+window.addEventListener('resize',()=>{ if(current) drawSig(current.y); if(!$('roi').hidden) placeRoi(); });
+(async()=>{ try{ sampleFn = window.claude ? await window.claude.use('sample') : null; }catch(e){ sampleFn=null; } if(!sampleFn){ $('coachSrc').dataset.off='1'; $('coachSrc').textContent=T[lang].srcOff; } })();
+</script>
+</body>
+</html>
