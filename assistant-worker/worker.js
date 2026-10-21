@@ -2,7 +2,7 @@
 // Paste this file into a Worker in the Cloudflare dashboard and add the secret ANTHROPIC_API_KEY.
 // It uses fetch directly because a dashboard Worker has no build step to bundle the Anthropic SDK.
 
-const MODEL = 'claude-opus-5-5';           // 'claude-haiku-5-5' costs about 40x less per question
+const MODEL = 'claude-haiku-5-5';          // fast, low-cost model; 'claude-opus-5-5' is smarter but about 40x the price
 const ALLOWED_ORIGINS = ['https://mirah-app.github.io', 'https://ayhamaq93-ux.github.io'];
 const DAILY_LIMIT_PER_IP = 30;            // soft limit, kept per Worker instance
 
@@ -69,7 +69,6 @@ export default {
         'Content-Type': 'application/json',
         'x-api-key': env.ANTHROPIC_API_KEY,
         'anthropic-version': '2023-06-01',
-        'anthropic-beta': 'server-side-fallback-2026-07-01',
       },
       body: JSON.stringify({
         model: MODEL,
@@ -80,7 +79,6 @@ export default {
         ],
         messages,
         output_config: { effort: 'low' },
-        fallbacks: 'default',
       }),
     });
     if (!res.ok) return json({ error: 'upstream ' + res.status }, 502, cors);
